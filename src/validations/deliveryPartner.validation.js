@@ -177,3 +177,45 @@ export const getAllDeliveryPartnersQueryValidation = Joi.object({
             'string.max': 'Search query cannot exceed 100 characters'
         })
 });
+
+// Validation for online status toggle
+export const toggleOnlineStatusValidation = Joi.object({
+    action: Joi.string()
+        .valid('go_online', 'go_offline')
+        .required()
+        .messages({
+            'any.required': 'Action is required',
+            'any.only': 'Action must be either go_online or go_offline'
+        })
+});
+
+// Validation for updating last active and online status
+export const updateOnlineStatusValidation = Joi.object({
+    isOnline: Joi.boolean()
+        .optional()
+        .messages({
+            'boolean.base': 'isOnline must be a boolean value'
+        }),
+    onlineStatus: Joi.string()
+        .valid('online', 'offline', 'busy')
+        .optional()
+        .messages({
+            'any.only': 'Online status must be one of: online, offline, busy'
+        })
+});
+
+// Validation for order response (accept/reject)
+export const respondToOrderValidation = Joi.object({
+    orderId: Joi.string()
+        .required()
+        .messages({
+            'any.required': 'Order ID is required'
+        }),
+    action: Joi.string()
+        .valid('accept', 'reject')
+        .required()
+        .messages({
+            'any.required': 'Action is required',
+            'any.only': 'Action must be either accept or reject'
+        })
+});

@@ -23,6 +23,30 @@ const deliveryPartnerSchema = new mongoose.Schema({
         enum: ['verified', 'pending'],
         default: 'pending'
     },
+    // Online/Offline status for delivery operations
+    isOnline: {
+        type: Boolean,
+        default: false
+    },
+    onlineStatus: {
+        type: String,
+        enum: ['online', 'offline', 'busy'],
+        default: 'offline'
+    },
+    lastOnlineAt: {
+        type: Date,
+        default: null
+    },
+    lastOfflineAt: {
+        type: Date,
+        default: null
+    },
+    // Current active order
+    currentOrder: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Order',
+        default: null
+    },
     // Document verification status
     documentStatus: {
         idProof: {
@@ -99,11 +123,12 @@ const deliveryPartnerSchema = new mongoose.Schema({
     timestamps: true
 });
 
-// Index for better query performance
+// Indexes for better performance
 deliveryPartnerSchema.index({ phone: 1 });
+deliveryPartnerSchema.index({ isOnline: 1 });
+deliveryPartnerSchema.index({ onlineStatus: 1 });
 deliveryPartnerSchema.index({ status: 1 });
 deliveryPartnerSchema.index({ isActive: 1 });
-deliveryPartnerSchema.index({ overallDocumentStatus: 1 });
 
 // Pre-save middleware to update overall document status
 deliveryPartnerSchema.pre('save', function(next) {
